@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class ScheduleDto {
     private int id;
-    private int periodId;
-    private int medicalAppointmentId;
-    private int doctorId;
+    private DoctorDto doctor;
+    private MedicalAppointmentDto medicalAppointment;
+    private PeriodDto period;
     private String state;
     private Date scheduleDate;
     private boolean status;
@@ -14,11 +14,17 @@ public class ScheduleDto {
     public ScheduleDto() {
     }
 
-    public ScheduleDto(int id, int periodId, int medicalAppointmentId, int doctorId, String state, Date scheduleDate, boolean status) {
+    public ScheduleDto(int id, PeriodDto period, MedicalAppointmentDto medicalAppointment, DoctorDto doctor, String state, Date scheduleDate, boolean status) {
         this.id = id;
-        this.periodId = periodId;
-        this.medicalAppointmentId = medicalAppointmentId;
-        this.doctorId = doctorId;
+        this.period = period;
+        this.medicalAppointment = medicalAppointment;
+        this.doctor = doctor;
+        this.state = state;
+        this.scheduleDate = scheduleDate;
+        this.status = status;
+    }
+
+    public ScheduleDto(String state, Date scheduleDate, boolean status) {
         this.state = state;
         this.scheduleDate = scheduleDate;
         this.status = status;
@@ -32,28 +38,28 @@ public class ScheduleDto {
         this.id = id;
     }
 
-    public int getPeriodId() {
-        return periodId;
+    public DoctorDto getDoctor() {
+        return doctor;
     }
 
-    public void setPeriodId(int periodId) {
-        this.periodId = periodId;
+    public void setDoctor(DoctorDto doctor) {
+        this.doctor = doctor;
     }
 
-    public int getMedicalAppointmentId() {
-        return medicalAppointmentId;
+    public MedicalAppointmentDto getMedicalAppointment() {
+        return medicalAppointment;
     }
 
-    public void setMedicalAppointmentId(int medicalAppointmentId) {
-        this.medicalAppointmentId = medicalAppointmentId;
+    public void setMedicalAppointment(MedicalAppointmentDto medicalAppointment) {
+        this.medicalAppointment = medicalAppointment;
     }
 
-    public int getDoctorId() {
-        return doctorId;
+    public PeriodDto getPeriod() {
+        return period;
     }
 
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
+    public void setPeriod(PeriodDto period) {
+        this.period = period;
     }
 
     public String getState() {

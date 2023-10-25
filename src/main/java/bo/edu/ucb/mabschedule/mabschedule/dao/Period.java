@@ -1,59 +1,74 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package bo.edu.ucb.mabschedule.mabschedule.dao;
 
+import java.io.Serializable;
+import java.sql.Time;
+import java.util.Collection;
+import java.util.Date;
 import jakarta.persistence.*;
 
-import java.sql.Time;
-import java.util.List;
-
+/**
+ *
+ * @author PCHOME
+ */
 @Entity
-@Table(name = "MAB_period")
-public class Period {
+@Table(name = "mab_period")
+@NamedQueries({
+    @NamedQuery(name = "Period.findAll", query = "SELECT p FROM Period p"),
+    @NamedQuery(name = "Period.findById", query = "SELECT p FROM Period p WHERE p.id = :id"),
+    @NamedQuery(name = "Period.findByTimeInit", query = "SELECT p FROM Period p WHERE p.timeInit = :timeInit"),
+    @NamedQuery(name = "Period.findByTimeEnd", query = "SELECT p FROM Period p WHERE p.timeEnd = :timeEnd"),
+    @NamedQuery(name = "Period.findByStatus", query = "SELECT p FROM Period p WHERE p.status = :status")})
+public class Period implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "week_day_id")
-    private WeekDay weekDay;
-
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Basic(optional = false)
     @Column(name = "time_init")
+    @Temporal(TemporalType.TIME)
     private Time timeInit;
-
+    @Basic(optional = false)
     @Column(name = "time_end")
+    @Temporal(TemporalType.TIME)
     private Time timeEnd;
-
+    @Basic(optional = false)
     @Column(name = "status")
     private int status;
-
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UnavailableSchedule> unavailableSchedules;
+    @JoinColumn(name = "mab_week_day_id", referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private WeekDay mabWeekDayId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "periodId", fetch = FetchType.LAZY)
+    private Collection<UnavailableSchedule> unavailableScheduleCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "periodId", fetch = FetchType.LAZY)
+    private Collection<Schedule> scheduleCollection;
 
     public Period() {
     }
 
-    public Period(int id, WeekDay weekDay, Time timeInit, Time timeEnd, int status, List<UnavailableSchedule> unavailableSchedules) {
+    public Period(Integer id) {
         this.id = id;
-        this.weekDay = weekDay;
+    }
+
+    public Period(Integer id, Time timeInit, Time timeEnd, int status) {
+        this.id = id;
         this.timeInit = timeInit;
         this.timeEnd = timeEnd;
         this.status = status;
-        this.unavailableSchedules = unavailableSchedules;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public WeekDay getWeekDay() {
-        return weekDay;
-    }
-
-    public void setWeekDay(WeekDay weekDay) {
-        this.weekDay = weekDay;
     }
 
     public Time getTimeInit() {
@@ -80,11 +95,49 @@ public class Period {
         this.status = status;
     }
 
-    public List<UnavailableSchedule> getUnavailableSchedules() {
-        return unavailableSchedules;
+    public WeekDay getMabWeekDayId() {
+        return mabWeekDayId;
     }
 
-    public void setUnavailableSchedules(List<UnavailableSchedule> unavailableSchedules) {
-        this.unavailableSchedules = unavailableSchedules;
+    public void setMabWeekDayId(WeekDay mabWeekDayId) {
+        this.mabWeekDayId = mabWeekDayId;
     }
+
+    public Collection<UnavailableSchedule> getUnavailableScheduleCollection() {
+        return unavailableScheduleCollection;
+    }
+
+    public void setUnavailableScheduleCollection(Collection<UnavailableSchedule> unavailableScheduleCollection) {
+        this.unavailableScheduleCollection = unavailableScheduleCollection;
+    }
+
+    public Collection<Schedule> getScheduleCollection() {
+        return scheduleCollection;
+    }
+
+    public void setScheduleCollection(Collection<Schedule> scheduleCollection) {
+        this.scheduleCollection = scheduleCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Period)) {
+            return false;
+        }
+        Period other = (Period) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    
 }

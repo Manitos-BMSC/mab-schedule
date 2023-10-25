@@ -68,7 +68,7 @@ public class PeriodDto {
     public static PeriodDto fromEntity(Period period) {
         PeriodDto result = new PeriodDto();
         result.setId(period.getId());
-        result.setWeekDay(WeekDayDto.fromEntity(period.getWeekDay()));
+        result.setWeekDay(WeekDayDto.fromEntity(period.getMabWeekDayId()));
         result.setTimeInit(period.getTimeInit());
         result.setTimeEnd(period.getTimeEnd());
         result.setStatus(period.getStatus());

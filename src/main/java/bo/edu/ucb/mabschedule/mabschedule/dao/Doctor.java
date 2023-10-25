@@ -1,86 +1,89 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package bo.edu.ucb.mabschedule.mabschedule.dao;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-
+/**
+ *
+ * @author PCHOME
+ */
 @Entity
-@Table(name = "MAB_doctor")
-public class Doctor {
+@Table(name = "mab_doctor")
+@NamedQueries({
+    @NamedQuery(name = "Doctor.findAll", query = "SELECT d FROM Doctor d"),
+    @NamedQuery(name = "Doctor.findById", query = "SELECT d FROM Doctor d WHERE d.id = :id"),
+    @NamedQuery(name = "Doctor.findByLicenseCode", query = "SELECT d FROM Doctor d WHERE d.licenseCode = :licenseCode"),
+    @NamedQuery(name = "Doctor.findByLicenseDueDate", query = "SELECT d FROM Doctor d WHERE d.licenseDueDate = :licenseDueDate"),
+    @NamedQuery(name = "Doctor.findByLicenseStatus", query = "SELECT d FROM Doctor d WHERE d.licenseStatus = :licenseStatus"),
+    @NamedQuery(name = "Doctor.findByMedicalSpeciality", query = "SELECT d FROM Doctor d WHERE d.medicalSpeciality = :medicalSpeciality"),
+    @NamedQuery(name = "Doctor.findByStatus", query = "SELECT d FROM Doctor d WHERE d.status = :status")})
+public class Doctor implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @OneToOne
-    @JoinColumn(name = "MAB_person_id_keycloack")
-    private Person person;
-
-    @Column(name = "s3_object_id")
-    private Long s3ObjectId;
-
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Basic(optional = false)
     @Column(name = "license_code")
     private String licenseCode;
-
+    @Basic(optional = false)
     @Column(name = "license_due_date")
+    @Temporal(TemporalType.DATE)
     private Date licenseDueDate;
-
+    @Basic(optional = false)
     @Column(name = "license_status")
     private String licenseStatus;
-
+    @Basic(optional = false)
     @Column(name = "medical_speciality")
     private String medicalSpeciality;
-
+    @Basic(optional = false)
     @Column(name = "status")
     private boolean status;
-
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    private List<HospitalDoctor> hospitalDoctors;
-
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UnavailableSchedule> unavailableSchedules;
-
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mabDoctorId", fetch = FetchType.LAZY)
+    private Collection<RequestDoctor> requestDoctorCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctorId", fetch = FetchType.LAZY)
+    private Collection<HospitalDoctor> hospitalDoctorCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctorId", fetch = FetchType.LAZY)
+    private Collection<UnavailableSchedule> unavailableScheduleCollection;
+    @JoinColumn(name = "mab_person_id_keycloack", referencedColumnName = "id_keycloack")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Person mabPersonIdKeycloack;
+    @JoinColumn(name = "s3_object_id", referencedColumnName = "s3_object_id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private S3Object s3ObjectId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctorId", fetch = FetchType.LAZY)
+    private Collection<Schedule> scheduleCollection;
 
     public Doctor() {
     }
 
-    public Doctor(int id, Person person, Long s3ObjectId, String licenseCode, Date licenseDueDate, String licenseStatus, String medicalSpeciality, boolean status, List<HospitalDoctor> hospitalDoctors, List<UnavailableSchedule> unavailableSchedules) {
+    public Doctor(Integer id) {
         this.id = id;
-        this.person = person;
-        this.s3ObjectId = s3ObjectId;
+    }
+
+    public Doctor(Integer id, String licenseCode, Date licenseDueDate, String licenseStatus, String medicalSpeciality, boolean status) {
+        this.id = id;
         this.licenseCode = licenseCode;
         this.licenseDueDate = licenseDueDate;
         this.licenseStatus = licenseStatus;
         this.medicalSpeciality = medicalSpeciality;
         this.status = status;
-        this.hospitalDoctors = hospitalDoctors;
-        this.unavailableSchedules = unavailableSchedules;
     }
 
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public Long getS3ObjectId() {
-        return s3ObjectId;
-    }
-
-    public void setS3ObjectId(Long s3ObjectId) {
-        this.s3ObjectId = s3ObjectId;
     }
 
     public String getLicenseCode() {
@@ -115,7 +118,7 @@ public class Doctor {
         this.medicalSpeciality = medicalSpeciality;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -123,19 +126,77 @@ public class Doctor {
         this.status = status;
     }
 
-    public List<HospitalDoctor> getHospitalDoctors() {
-        return hospitalDoctors;
+    public Collection<RequestDoctor> getRequestDoctorCollection() {
+        return requestDoctorCollection;
     }
 
-    public void setHospitalDoctors(List<HospitalDoctor> hospitalDoctors) {
-        this.hospitalDoctors = hospitalDoctors;
+    public void setRequestDoctorCollection(Collection<RequestDoctor> requestDoctorCollection) {
+        this.requestDoctorCollection = requestDoctorCollection;
     }
 
-    public List<UnavailableSchedule> getUnavailableSchedules() {
-        return unavailableSchedules;
+    public Collection<HospitalDoctor> getHospitalDoctorCollection() {
+        return hospitalDoctorCollection;
     }
 
-    public void setUnavailableSchedules(List<UnavailableSchedule> unavailableSchedules) {
-        this.unavailableSchedules = unavailableSchedules;
+    public void setHospitalDoctorCollection(Collection<HospitalDoctor> hospitalDoctorCollection) {
+        this.hospitalDoctorCollection = hospitalDoctorCollection;
     }
+
+    public Collection<UnavailableSchedule> getUnavailableScheduleCollection() {
+        return unavailableScheduleCollection;
+    }
+
+    public void setUnavailableScheduleCollection(Collection<UnavailableSchedule> unavailableScheduleCollection) {
+        this.unavailableScheduleCollection = unavailableScheduleCollection;
+    }
+
+    public Person getMabPersonIdKeycloack() {
+        return mabPersonIdKeycloack;
+    }
+
+    public void setMabPersonIdKeycloack(Person mabPersonIdKeycloack) {
+        this.mabPersonIdKeycloack = mabPersonIdKeycloack;
+    }
+
+    public S3Object getS3ObjectId() {
+        return s3ObjectId;
+    }
+
+    public void setS3ObjectId(S3Object s3ObjectId) {
+        this.s3ObjectId = s3ObjectId;
+    }
+
+    public Collection<Schedule> getScheduleCollection() {
+        return scheduleCollection;
+    }
+
+    public void setScheduleCollection(Collection<Schedule> scheduleCollection) {
+        this.scheduleCollection = scheduleCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Doctor)) {
+            return false;
+        }
+        Doctor other = (Doctor) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.mycompany.manitos_bmsc.dao.Doctor[ id=" + id + " ]";
+    }
+    
 }

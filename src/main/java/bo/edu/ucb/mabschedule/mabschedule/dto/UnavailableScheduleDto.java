@@ -5,23 +5,34 @@ import java.util.Date;
 public class UnavailableScheduleDto {
 
     private int id;
-    private int doctorId;
-    private int periodId;
+    private DoctorDto doctor;
+    private PeriodDto period;
     private Date dateFrom;
     private Date dateTo;
-    private String weekDay;
     private boolean status;
 
     public UnavailableScheduleDto() {
     }
 
-    public UnavailableScheduleDto(int id, int doctorId, int periodId, Date dateFrom, Date dateTo, String weekDay, boolean status) {
+    public UnavailableScheduleDto(int id, DoctorDto doctor, PeriodDto period, Date dateFrom, Date dateTo, boolean status) {
         this.id = id;
-        this.doctorId = doctorId;
-        this.periodId = periodId;
+        this.doctor = doctor;
+        this.period = period;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
-        this.weekDay = weekDay;
+        this.status = status;
+    }
+
+    public UnavailableScheduleDto(PeriodDto period, Date dateFrom, Date dateTo, boolean status) {
+        this.period = period;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.status = status;
+    }
+
+    public UnavailableScheduleDto(Date dateFrom, Date dateTo, boolean status) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
         this.status = status;
     }
 
@@ -33,20 +44,20 @@ public class UnavailableScheduleDto {
         this.id = id;
     }
 
-    public int getDoctorId() {
-        return doctorId;
+    public DoctorDto getDoctor() {
+        return doctor;
     }
 
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
+    public void setDoctor(DoctorDto doctor) {
+        this.doctor = doctor;
     }
 
-    public int getPeriodId() {
-        return periodId;
+    public PeriodDto getPeriod() {
+        return period;
     }
 
-    public void setPeriodId(int periodId) {
-        this.periodId = periodId;
+    public void setPeriod(PeriodDto period) {
+        this.period = period;
     }
 
     public Date getDateFrom() {
@@ -64,15 +75,7 @@ public class UnavailableScheduleDto {
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
     }
-
-    public String getWeekDay() {
-        return weekDay;
-    }
-
-    public void setWeekDay(String weekDay) {
-        this.weekDay = weekDay;
-    }
-
+    
     public boolean isStatus() {
         return status;
     }

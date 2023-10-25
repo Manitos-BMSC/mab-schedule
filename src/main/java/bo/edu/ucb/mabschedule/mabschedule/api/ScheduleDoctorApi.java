@@ -4,15 +4,13 @@ import bo.edu.ucb.mabschedule.mabschedule.bl.ScheduleDoctorBl;
 import bo.edu.ucb.mabschedule.mabschedule.dto.PeriodDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ResponseDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDoctorDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.UnavailableScheduleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -23,9 +21,9 @@ public class ScheduleDoctorApi {
 
     private final Logger logger = LoggerFactory.getLogger(ScheduleDoctorApi.class);
 
+    @Autowired
     private final ScheduleDoctorBl scheduleDoctorBl;
 
-    @Autowired
     public ScheduleDoctorApi(ScheduleDoctorBl scheduleDoctorBl) {
         this.scheduleDoctorBl = scheduleDoctorBl;
     }
@@ -58,6 +56,23 @@ public class ScheduleDoctorApi {
         String message = "OK";
         Boolean success = true;
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, scheduleDoctor);
+        System.out.println("response: " + response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/{doctorId}/{periodId}")
+    public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postUnavailableSchedule(
+            @PathVariable Long doctorId,
+            @PathVariable Long periodId,
+            @RequestBody UnavailableScheduleDto unavailableScheduleDto
+    ){
+        logger.info("post unavailable schedule for doctor with id: " + doctorId);
+        scheduleDoctorBl.postUnavailableSchedule(doctorId, periodId, unavailableScheduleDto);
+        logger.info("doctor schedule updated");
+        int code = 200;
+        String message = "OK";
+        Boolean success = true;
+        ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
         System.out.println("response: " + response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

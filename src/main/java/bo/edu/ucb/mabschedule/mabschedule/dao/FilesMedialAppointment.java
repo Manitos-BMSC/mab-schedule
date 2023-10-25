@@ -13,14 +13,13 @@ import jakarta.persistence.*;
  * @author PCHOME
  */
 @Entity
-@Table(name = "mab_schedule")
+@Table(name = "files_medial_appointment")
 @NamedQueries({
-    @NamedQuery(name = "Schedule.findAll", query = "SELECT s FROM Schedule s"),
-    @NamedQuery(name = "Schedule.findById", query = "SELECT s FROM Schedule s WHERE s.id = :id"),
-    @NamedQuery(name = "Schedule.findByState", query = "SELECT s FROM Schedule s WHERE s.state = :state"),
-    @NamedQuery(name = "Schedule.findByScheduleDate", query = "SELECT s FROM Schedule s WHERE s.scheduleDate = :scheduleDate"),
-    @NamedQuery(name = "Schedule.findByStatus", query = "SELECT s FROM Schedule s WHERE s.status = :status")})
-public class Schedule implements Serializable {
+    @NamedQuery(name = "FilesMedialAppointment.findAll", query = "SELECT f FROM FilesMedialAppointment f"),
+    @NamedQuery(name = "FilesMedialAppointment.findById", query = "SELECT f FROM FilesMedialAppointment f WHERE f.id = :id"),
+    @NamedQuery(name = "FilesMedialAppointment.findByFileDate", query = "SELECT f FROM FilesMedialAppointment f WHERE f.fileDate = :fileDate"),
+    @NamedQuery(name = "FilesMedialAppointment.findByStatus", query = "SELECT f FROM FilesMedialAppointment f WHERE f.status = :status")})
+public class FilesMedialAppointment implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -29,36 +28,29 @@ public class Schedule implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "state")
-    private String state;
-    @Basic(optional = false)
-    @Column(name = "schedule_date")
+    @Column(name = "file_date")
     @Temporal(TemporalType.DATE)
-    private Date scheduleDate;
+    private Date fileDate;
     @Basic(optional = false)
     @Column(name = "status")
     private boolean status;
-    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Doctor doctorId;
     @JoinColumn(name = "medical_appointment_id", referencedColumnName = "id_medical_appointment")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private MedicalAppointment medicalAppointmentId;
-    @JoinColumn(name = "period_id", referencedColumnName = "id")
+    @JoinColumn(name = "s3_object_s3_object_id", referencedColumnName = "s3_object_id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Period periodId;
+    private S3Object s3ObjectS3ObjectId;
 
-    public Schedule() {
+    public FilesMedialAppointment() {
     }
 
-    public Schedule(Integer id) {
+    public FilesMedialAppointment(Integer id) {
         this.id = id;
     }
 
-    public Schedule(Integer id, String state, Date scheduleDate, boolean status) {
+    public FilesMedialAppointment(Integer id, Date fileDate, boolean status) {
         this.id = id;
-        this.state = state;
-        this.scheduleDate = scheduleDate;
+        this.fileDate = fileDate;
         this.status = status;
     }
 
@@ -70,20 +62,12 @@ public class Schedule implements Serializable {
         this.id = id;
     }
 
-    public String getState() {
-        return state;
+    public Date getFileDate() {
+        return fileDate;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public Date getScheduleDate() {
-        return scheduleDate;
-    }
-
-    public void setScheduleDate(Date scheduleDate) {
-        this.scheduleDate = scheduleDate;
+    public void setFileDate(Date fileDate) {
+        this.fileDate = fileDate;
     }
 
     public boolean getStatus() {
@@ -94,14 +78,6 @@ public class Schedule implements Serializable {
         this.status = status;
     }
 
-    public Doctor getDoctorId() {
-        return doctorId;
-    }
-
-    public void setDoctorId(Doctor doctorId) {
-        this.doctorId = doctorId;
-    }
-
     public MedicalAppointment getMedicalAppointmentId() {
         return medicalAppointmentId;
     }
@@ -110,12 +86,12 @@ public class Schedule implements Serializable {
         this.medicalAppointmentId = medicalAppointmentId;
     }
 
-    public Period getPeriodId() {
-        return periodId;
+    public S3Object getS3ObjectS3ObjectId() {
+        return s3ObjectS3ObjectId;
     }
 
-    public void setPeriodId(Period periodId) {
-        this.periodId = periodId;
+    public void setS3ObjectS3ObjectId(S3Object s3ObjectS3ObjectId) {
+        this.s3ObjectS3ObjectId = s3ObjectS3ObjectId;
     }
 
     @Override
@@ -128,10 +104,10 @@ public class Schedule implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Schedule)) {
+        if (!(object instanceof FilesMedialAppointment)) {
             return false;
         }
-        Schedule other = (Schedule) object;
+        FilesMedialAppointment other = (FilesMedialAppointment) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -140,7 +116,7 @@ public class Schedule implements Serializable {
 
     @Override
     public String toString() {
-        return "com.mycompany.manitos_bmsc.dao.Schedule[ id=" + id + " ]";
+        return "com.mycompany.manitos_bmsc.dao.FilesMedialAppointment[ id=" + id + " ]";
     }
     
 }
