@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class PeriodDto {
     private int id;
 
-    private int weekDayId;
+    private WeekDayDto weekDay;
     private Time timeInit;
     private Time timeEnd;
     private int status;
@@ -17,20 +17,12 @@ public class PeriodDto {
     public PeriodDto() {
     }
 
-    public PeriodDto(int id, int weekDayId, Time timeInit, Time timeEnd, int status) {
+    public PeriodDto(int id, WeekDayDto weekDay, Time timeInit, Time timeEnd, int status) {
         this.id = id;
-        this.weekDayId = weekDayId;
+        this.weekDay = weekDay;
         this.timeInit = timeInit;
         this.timeEnd = timeEnd;
         this.status = status;
-    }
-
-    public int getWeekDayId() {
-        return weekDayId;
-    }
-
-    public void setWeekDayId(int weekDayId) {
-        this.weekDayId = weekDayId;
     }
 
     public int getId() {
@@ -39,6 +31,14 @@ public class PeriodDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public WeekDayDto getWeekDay() {
+        return weekDay;
+    }
+
+    public void setWeekDay(WeekDayDto weekDay) {
+        this.weekDay = weekDay;
     }
 
     public Time getTimeInit() {
@@ -65,17 +65,17 @@ public class PeriodDto {
         this.status = status;
     }
 
-    public static PeriodDto fromEntity(Period period){
-        return new PeriodDto(
-                period.getId(),
-                period.getWeekDayId(),
-                period.getTimeInit(),
-                period.getTimeEnd(),
-                period.getStatus()
-        );
+    public static PeriodDto fromEntity(Period period) {
+        PeriodDto result = new PeriodDto();
+        result.setId(period.getId());
+        result.setWeekDay(WeekDayDto.fromEntity(period.getWeekDay()));
+        result.setTimeInit(period.getTimeInit());
+        result.setTimeEnd(period.getTimeEnd());
+        result.setStatus(period.getStatus());
+        return result;
     }
 
-    public static List<PeriodDto> fromEntityList(List<Period> periodList){
-        return periodList.stream().map(PeriodDto::fromEntity).collect(Collectors.toList());
+    public static List<PeriodDto> fromEntityList(List<Period> periods) {
+        return periods.stream().map(PeriodDto::fromEntity).collect(Collectors.toList());
     }
 }

@@ -12,8 +12,9 @@ public class Period {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "MAB_week_day_id")
-    private int weekDayId;
+    @ManyToOne
+    @JoinColumn(name = "week_day_id")
+    private WeekDay weekDay;
 
     @Column(name = "time_init")
     private Time timeInit;
@@ -30,21 +31,13 @@ public class Period {
     public Period() {
     }
 
-    public Period(int id, int weekDayId, Time timeInit, Time timeEnd, int status, List<UnavailableSchedule> unavailableSchedules) {
+    public Period(int id, WeekDay weekDay, Time timeInit, Time timeEnd, int status, List<UnavailableSchedule> unavailableSchedules) {
         this.id = id;
-        this.weekDayId = weekDayId;
+        this.weekDay = weekDay;
         this.timeInit = timeInit;
         this.timeEnd = timeEnd;
         this.status = status;
         this.unavailableSchedules = unavailableSchedules;
-    }
-
-    public int getWeekDayId() {
-        return weekDayId;
-    }
-
-    public void setWeekDayId(int weekDayId) {
-        this.weekDayId = weekDayId;
     }
 
     public int getId() {
@@ -53,6 +46,14 @@ public class Period {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public WeekDay getWeekDay() {
+        return weekDay;
+    }
+
+    public void setWeekDay(WeekDay weekDay) {
+        this.weekDay = weekDay;
     }
 
     public Time getTimeInit() {
