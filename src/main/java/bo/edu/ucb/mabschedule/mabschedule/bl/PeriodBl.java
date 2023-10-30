@@ -23,7 +23,7 @@ public class PeriodBl {
 
     public List<PeriodDto> getAllPeriods(){
         logger.info("Initializing getAllPeriods");
-         List<Period> periods =  periodRepository.findAll();
+         List<Period> periods =  periodRepository.findAllOrderByMabWeekDayId();
          logger.info("periods: " + periods);
          return PeriodDto.fromEntityList(periods);
     }

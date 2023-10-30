@@ -8,6 +8,7 @@ import bo.edu.ucb.mabschedule.mabschedule.dto.UnavailableScheduleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,10 +45,10 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/{doctorId}/{date}")
+    @GetMapping("/doctor/{doctorId}")
     public ResponseEntity<ResponseDto<ScheduleDoctorDto>> getScheduleDoctorByDoctorIdAndDate(
             @PathVariable Integer doctorId,
-            @PathVariable Date date
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date date
     ){
         logger.info("getScheduleDoctorByDoctorIdAndDate");
         ScheduleDoctorDto scheduleDoctor = scheduleDoctorBl.getScheduleDoctorByDoctorId(doctorId, date);
