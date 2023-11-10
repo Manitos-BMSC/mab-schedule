@@ -61,7 +61,7 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/{doctorId}/{periodId}")
+    @PostMapping("unavailable-schedule/{doctorId}/{periodId}")
     public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postUnavailableSchedule(
             @PathVariable Long doctorId,
             @PathVariable Long periodId,
