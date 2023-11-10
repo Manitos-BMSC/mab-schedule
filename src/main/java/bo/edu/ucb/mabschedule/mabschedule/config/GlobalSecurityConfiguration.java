@@ -29,9 +29,9 @@ public class GlobalSecurityConfiguration {
         http.authorizeHttpRequests( (authorizeHttpRequests) -> {
             authorizeHttpRequests
                     .requestMatchers("/api/v1/appointment/**").hasRole("doctor")
-                    .requestMatchers("/api/v1/period/periods").hasAnyRole("doctorJefe", "doctor", "paciente")
-                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/**").hasAnyRole("doctorJefe", "doctor", "paciente")
-                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/doctor/**").hasAnyRole("doctorJefe", "doctor", "paciente")
+                    .requestMatchers("/api/v1/period/periods").permitAll()
+                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/**").permitAll()
+                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/doctor/**").permitAll()
                     .requestMatchers( HttpMethod.POST ,"api/v1/scheduleDoctor/**").hasAnyRole("doctorJefe", "doctor")
                     .anyRequest()
                     .denyAll();
