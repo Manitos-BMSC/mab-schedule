@@ -74,7 +74,7 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/appointment/{doctorId}/medical-appointment/{medicalAppointmentId}")
+    @PostMapping("/appointment/doctor/{doctorId}/medical-appointment/{medicalAppointmentId}")
     public ResponseDto<ScheduleDoctorDto> postAppointment(
             @PathVariable Long doctorId,
             @PathVariable Long medicalAppointmentId,
