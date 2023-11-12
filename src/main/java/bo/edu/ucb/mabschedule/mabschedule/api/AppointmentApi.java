@@ -24,7 +24,7 @@ public class AppointmentApi {
     }
 
     @PostMapping("/doctor/{doctorId}/period/{periodId}/medical-appointment/{medicalAppointmentId}")
-    public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postAppointmentForDoctor(
+    public ResponseDto<ScheduleDoctorDto> postAppointmentForDoctor(
             @PathVariable Long doctorId,
             @PathVariable Long periodId,
             @PathVariable Long medicalAppointmentId,
@@ -37,7 +37,7 @@ public class AppointmentApi {
         Boolean success = true;
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
         System.out.println("response: " + response);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
     @PostMapping("/patient/{pacientId}/hospital-doctor/{hospitalDoctorId}")

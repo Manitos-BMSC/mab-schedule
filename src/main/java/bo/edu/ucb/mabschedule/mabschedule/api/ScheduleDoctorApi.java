@@ -27,7 +27,7 @@ public class ScheduleDoctorApi {
     }
 
     @GetMapping("/{doctorId}")
-    public ResponseEntity<ResponseDto<ScheduleDoctorDto>> getScheduleDoctorByDoctorId(
+    public ResponseDto<ScheduleDoctorDto> getScheduleDoctorByDoctorId(
             @PathVariable Integer doctorId
     ){
         logger.info("getScheduleDoctorByDoctorId");
@@ -39,11 +39,11 @@ public class ScheduleDoctorApi {
         Boolean success = true;
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, scheduleDoctor);
         System.out.println("response: " + response);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
     @GetMapping("/doctor/{doctorId}")
-    public ResponseEntity<ResponseDto<ScheduleDoctorDto>> getScheduleDoctorByDoctorIdAndDate(
+    public ResponseDto<ScheduleDoctorDto> getScheduleDoctorByDoctorIdAndDate(
             @PathVariable Integer doctorId,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date date
     ){
@@ -55,11 +55,11 @@ public class ScheduleDoctorApi {
         Boolean success = true;
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, scheduleDoctor);
         System.out.println("response: " + response);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
     @PostMapping("/unavailable-schedule/{doctorId}")
-    public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postUnavailableSchedule(
+    public ResponseDto<ScheduleDoctorDto> postUnavailableSchedule(
             @PathVariable Long doctorId,
             @RequestBody UnavailableSchedulePeriodsDto unavailableSchedulePeriodsDto
             ){
@@ -71,7 +71,7 @@ public class ScheduleDoctorApi {
         Boolean success = true;
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
         System.out.println("response: " + response);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
 }

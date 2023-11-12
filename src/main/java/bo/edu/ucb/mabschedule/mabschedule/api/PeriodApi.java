@@ -26,7 +26,7 @@ public class PeriodApi {
     }
 
     @GetMapping("/periods")
-    public ResponseEntity<ResponseDto<List<PeriodDto>>> findAllPeriods(){
+    public ResponseDto<List<PeriodDto>> findAllPeriods(){
         logger.info("findAllPeriods");
         List<PeriodDto> periodDtoList = periodBl.getAllPeriods();
         logger.info("periodDtoList: " + periodDtoList);
@@ -35,7 +35,7 @@ public class PeriodApi {
         Boolean success = true;
         ResponseDto<List<PeriodDto>> response = new ResponseDto<>(success, message, code, periodDtoList);
         System.out.println("response: " + response);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
 }
