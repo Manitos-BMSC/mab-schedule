@@ -79,21 +79,5 @@ public class ScheduleDoctorBl {
         logger.info("unavailableSchedule saved");
     }
 
-    public void postAppointment(Long doctorId, Long medicalAppointmentId, SchedulePeriodsDto schedulePeriodsDto){
-        logger.info("Initializing postAppointment");
-        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow();
-        MedicalAppointment medicalAppointment = medicalAppointmentRepository.findById(medicalAppointmentId).orElseThrow();
-        for(PeriodDto period : schedulePeriodsDto.getPeriods()){
-            Schedule schedule = new Schedule();
-            schedule.setDoctorId(doctor);
-            schedule.setPeriodId(periodRepository.findById((long)period.getId()).orElseThrow());
-            schedule.setMedicalAppointmentId(medicalAppointment);
-            schedule.setScheduleDate(schedulePeriodsDto.getScheduleDate());
-            schedule.setState("Pendiente");
-            schedule.setStatus(true);
-            scheduleDoctorRepository.save(schedule);
-        }
-        logger.info("appointment saved");
-    }
 
 }

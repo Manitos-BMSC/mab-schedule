@@ -74,21 +74,4 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/appointment/doctor/{doctorId}/medical-appointment/{medicalAppointmentId}")
-    public ResponseDto<ScheduleDoctorDto> postAppointment(
-            @PathVariable Long doctorId,
-            @PathVariable Long medicalAppointmentId,
-            @RequestBody SchedulePeriodsDto schedulePeriodsDto
-    ){
-        logger.info("postAppointment");
-        scheduleDoctorBl.postAppointment(doctorId, medicalAppointmentId, schedulePeriodsDto);
-        logger.info("appointment created");
-        int code = 200;
-        String message = "OK";
-        Boolean success = true;
-        ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
-        System.out.println("response: " + response);
-        return response;
-    }
-
 }

@@ -3,7 +3,9 @@ package bo.edu.ucb.mabschedule.mabschedule.bl;
 import bo.edu.ucb.mabschedule.mabschedule.dao.*;
 import bo.edu.ucb.mabschedule.mabschedule.dao.repository.*;
 import bo.edu.ucb.mabschedule.mabschedule.dto.MedicalAppointmentDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.PeriodDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.SchedulePeriodsDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,24 @@ public class AppointmentBl {
         medicalAppointment.setStatus(true);
         MedicalAppointment savedMedicalAppointment = medicalAppointmentRepository.save(medicalAppointment);
         return new MedicalAppointmentDto(savedMedicalAppointment);
+    }
+
+
+    public void postAppointment(Long doctorId, Long medicalAppointmentId, SchedulePeriodsDto schedulePeriodsDto){
+        logger.info("Initializing postAppointment");
+        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow();
+        MedicalAppointment medicalAppointment = medicalAppointmentRepository.findById(medicalAppointmentId).orElseThrow();
+        for(PeriodDto period : schedulePeriodsDto.getPeriods()){
+            Schedule schedule = new Schedule();
+            schedule.setDoctorId(doctor);
+            schedule.setPeriodId(periodRepository.findById((long)period.getId()).orElseThrow());
+            schedule.setMedicalAppointmentId(medicalAppointment);
+            schedule.setScheduleDate(schedulePeriodsDto.getScheduleDate());
+            schedule.setState("Pendiente");
+            schedule.setStatus(true);
+            scheduleRepository.save(schedule);
+        }
+        logger.info("appointment saved");
     }
 
 }

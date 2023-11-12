@@ -1,10 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.api;
 
 import bo.edu.ucb.mabschedule.mabschedule.bl.AppointmentBl;
-import bo.edu.ucb.mabschedule.mabschedule.dto.MedicalAppointmentDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ResponseDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDoctorDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +53,23 @@ public class AppointmentApi {
         String message = "OK";
         Boolean success = true;
         ResponseDto<MedicalAppointmentDto> response = new ResponseDto<>(success, message, code, medicalAppointment);
+        System.out.println("response: " + response);
+        return response;
+    }
+
+    @PostMapping("/doctor/{doctorId}/medical-appointment/{medicalAppointmentId}")
+    public ResponseDto<ScheduleDoctorDto> postAppointment(
+            @PathVariable Long doctorId,
+            @PathVariable Long medicalAppointmentId,
+            @RequestBody SchedulePeriodsDto schedulePeriodsDto
+    ){
+        logger.info("postAppointment");
+        appointmentBl.postAppointment(doctorId, medicalAppointmentId, schedulePeriodsDto);
+        logger.info("appointment created");
+        int code = 200;
+        String message = "OK";
+        Boolean success = true;
+        ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
         System.out.println("response: " + response);
         return response;
     }
