@@ -1,5 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.dto;
 
+import bo.edu.ucb.mabschedule.mabschedule.dao.MedicalAppointment;
+
 import java.util.Date;
 
 public class MedicalAppointmentDto {
@@ -26,6 +28,18 @@ public MedicalAppointmentDto(int idMedicalAppointment, int patientId, int hospit
         this.medicalAppointmentState = medicalAppointmentState;
         this.medicalAppointmentDate = medicalAppointmentDate;
         this.status = status;
+    }
+
+    public MedicalAppointmentDto(MedicalAppointment medicalAppointment){
+        this.idMedicalAppointment = medicalAppointment.getIdMedicalAppointment();
+        this.patientId = medicalAppointment.getPacientId().getId();
+        this.hospitalDoctorId = medicalAppointment.getHospitalDoctorId().getId();
+        this.comments = medicalAppointment.getComments();
+        this.emitedAppointmentDate = medicalAppointment.getEmitedAppointmentDate();
+        this.reason = medicalAppointment.getReason();
+        this.medicalAppointmentState = medicalAppointment.getMedicalAppointmentState();
+        this.medicalAppointmentDate = medicalAppointment.getMedicalAppointmentDate();
+        this.status = medicalAppointment.getStatus();
     }
 
     public int getIdMedicalAppointment() {

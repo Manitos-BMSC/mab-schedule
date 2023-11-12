@@ -1,16 +1,8 @@
 package bo.edu.ucb.mabschedule.mabschedule.bl;
 
-import bo.edu.ucb.mabschedule.mabschedule.dao.Doctor;
-import bo.edu.ucb.mabschedule.mabschedule.dao.Period;
-import bo.edu.ucb.mabschedule.mabschedule.dao.Schedule;
-import bo.edu.ucb.mabschedule.mabschedule.dao.UnavailableSchedule;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.DoctorRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.PeriodRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.ScheduleRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.UnavailableScheduleRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dto.PeriodDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDoctorDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.UnavailableScheduleDto;
+import bo.edu.ucb.mabschedule.mabschedule.dao.*;
+import bo.edu.ucb.mabschedule.mabschedule.dao.repository.*;
+import bo.edu.ucb.mabschedule.mabschedule.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +23,16 @@ public class ScheduleDoctorBl {
     private final DoctorRepository doctorRepository;
     @Autowired
     private final PeriodRepository periodRepository;
+    @Autowired
+    private final MedicalAppointmentRepository medicalAppointmentRepository;
     private final Logger logger = LoggerFactory.getLogger(ScheduleDoctorBl.class);
 
-    public ScheduleDoctorBl (UnavailableScheduleRepository unavailableScheduleRepository, ScheduleRepository scheduleDoctorRepository, PeriodRepository periodRepository, DoctorRepository doctorRepository){
+    public ScheduleDoctorBl (UnavailableScheduleRepository unavailableScheduleRepository, ScheduleRepository scheduleDoctorRepository, PeriodRepository periodRepository, DoctorRepository doctorRepository, MedicalAppointmentRepository medicalAppointmentRepository){
         this.unavailableScheduleRepository = unavailableScheduleRepository;
         this.scheduleDoctorRepository = scheduleDoctorRepository;
         this.periodRepository = periodRepository;
         this.doctorRepository = doctorRepository;
+        this.medicalAppointmentRepository = medicalAppointmentRepository;
     }
 
     public ScheduleDoctorDto getScheduleDoctorByDoctorId(Integer doctorId, Date actualDate){
@@ -66,21 +61,39 @@ public class ScheduleDoctorBl {
         return scheduleDoctorDto;
     }
 
-    public void postUnavailableSchedule(Long doctorId, Long periodId, UnavailableScheduleDto unavailableScheduleDto){
+    public void postUnavailableSchedule(Long doctorId, UnavailableSchedulePeriodsDto unavailableSchedulePeriodsDto){
         logger.info("Initializing postUnavailableSchedule");
-        UnavailableSchedule unavailableSchedule = new UnavailableSchedule();
         Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow();
         logger.info("doctor: " + doctor);
-        Period period = periodRepository.findById(periodId).orElseThrow();
-        logger.info("period: " + period);
-        unavailableSchedule.setDoctorId(doctor);
-        unavailableSchedule.setPeriodId(period);
-        unavailableSchedule.setDateFrom(unavailableScheduleDto.getDateFrom());
-        unavailableSchedule.setDateTo(unavailableScheduleDto.getDateTo());
-        unavailableSchedule.setStatus(unavailableScheduleDto.isStatus());
-        logger.info("unavailableSchedule: " + unavailableSchedule);
-        unavailableScheduleRepository.save(unavailableSchedule);
+
+        for(PeriodDto period :  unavailableSchedulePeriodsDto.getPeriods()){
+            UnavailableSchedule unavailableSchedule = new UnavailableSchedule();
+            unavailableSchedule.setDoctorId(doctor);
+            unavailableSchedule.setPeriodId(periodRepository.findById((long)period.getId()).orElseThrow());
+            unavailableSchedule.setDateFrom(unavailableSchedulePeriodsDto.getUnavailableSchedule().getDateFrom());
+            unavailableSchedule.setDateTo(unavailableSchedulePeriodsDto.getUnavailableSchedule().getDateTo());
+            unavailableSchedule.setStatus(true);
+            unavailableScheduleRepository.save(unavailableSchedule);
+        }
+
         logger.info("unavailableSchedule saved");
+    }
+
+    public void postAppointment(Long doctorId, Long medicalAppointmentId, SchedulePeriodsDto schedulePeriodsDto){
+        logger.info("Initializing postAppointment");
+        Doctor doctor =  doctorRepository.findById(doctorId).orElseThrow();
+        MedicalAppointment medicalAppointment = medicalAppointmentRepository.findById(medicalAppointmentId).orElseThrow();
+        for(PeriodDto period : schedulePeriodsDto.getPeriods()){
+            Schedule schedule = new Schedule();
+            schedule.setDoctorId(doctor);
+            schedule.setPeriodId(periodRepository.findById((long)period.getId()).orElseThrow());
+            schedule.setMedicalAppointmentId(medicalAppointment);
+            schedule.setScheduleDate(schedulePeriodsDto.getScheduleDate());
+            schedule.setState("Pendiente");
+            schedule.setStatus(true);
+            scheduleDoctorRepository.save(schedule);
+        }
+        logger.info("appointment saved");
     }
 
 }

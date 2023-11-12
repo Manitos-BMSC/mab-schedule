@@ -1,13 +1,8 @@
 package bo.edu.ucb.mabschedule.mabschedule.bl;
 
-import bo.edu.ucb.mabschedule.mabschedule.dao.Doctor;
-import bo.edu.ucb.mabschedule.mabschedule.dao.MedicalAppointment;
-import bo.edu.ucb.mabschedule.mabschedule.dao.Period;
-import bo.edu.ucb.mabschedule.mabschedule.dao.Schedule;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.DoctorRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.MedicalAppointmentRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.PeriodRepository;
-import bo.edu.ucb.mabschedule.mabschedule.dao.repository.ScheduleRepository;
+import bo.edu.ucb.mabschedule.mabschedule.dao.*;
+import bo.edu.ucb.mabschedule.mabschedule.dao.repository.*;
+import bo.edu.ucb.mabschedule.mabschedule.dto.MedicalAppointmentDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +21,18 @@ public class AppointmentBl {
     private final PeriodRepository periodRepository;
     @Autowired
     private final MedicalAppointmentRepository medicalAppointmentRepository;
+    @Autowired
+    private final PacientRepository pacientRepository;
+    @Autowired
+    private final HospitalDoctorRepository hospitalDoctorRepository;
 
-    public AppointmentBl(ScheduleRepository scheduleRepository, DoctorRepository doctorRepository, PeriodRepository periodRepository, MedicalAppointmentRepository medicalAppointmentRepository){
+    public AppointmentBl(ScheduleRepository scheduleRepository, DoctorRepository doctorRepository, PeriodRepository periodRepository, MedicalAppointmentRepository medicalAppointmentRepository, PacientRepository pacientRepository, HospitalDoctorRepository hospitalDoctorRepository){
         this.scheduleRepository = scheduleRepository;
         this.doctorRepository = doctorRepository;
         this.periodRepository = periodRepository;
         this.medicalAppointmentRepository = medicalAppointmentRepository;
+        this.pacientRepository = pacientRepository;
+        this.hospitalDoctorRepository = hospitalDoctorRepository;
     }
 
     public void postAppointmentForDoctor(Long doctorId, Long periodId, Long medicalAppointmentId, ScheduleDto scheduleDto){
@@ -48,4 +49,22 @@ public class AppointmentBl {
         schedule.setStatus(scheduleDto.isStatus());
         scheduleRepository.save(schedule);
     }
+
+    public MedicalAppointmentDto postMedicalAppointment(Long pacientId, Long hospitalDoctorId, MedicalAppointmentDto medicalAppointmentDto){
+        logger.info("Initializing postMedicalAppointment");
+        MedicalAppointment medicalAppointment = new MedicalAppointment();
+        Pacient pacient = pacientRepository.findById(pacientId).orElseThrow();
+        HospitalDoctor hospitalDoctor = hospitalDoctorRepository.findById(hospitalDoctorId).orElseThrow();
+        medicalAppointment.setPacientId(pacient);
+        medicalAppointment.setHospitalDoctorId(hospitalDoctor);
+        medicalAppointment.setMedicalAppointmentDate(medicalAppointmentDto.getMedicalAppointmentDate());
+        medicalAppointment.setComments(medicalAppointmentDto.getComments());
+        medicalAppointment.setEmitedAppointmentDate(medicalAppointmentDto.getEmitedAppointmentDate());
+        medicalAppointment.setReason(medicalAppointmentDto.getReason());
+        medicalAppointment.setMedicalAppointmentState(medicalAppointmentDto.getMedicalAppointmentState());
+        medicalAppointment.setStatus(true);
+        MedicalAppointment savedMedicalAppointment = medicalAppointmentRepository.save(medicalAppointment);
+        return new MedicalAppointmentDto(savedMedicalAppointment);
+    }
+
 }

@@ -1,6 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.api;
 
 import bo.edu.ucb.mabschedule.mabschedule.bl.AppointmentBl;
+import bo.edu.ucb.mabschedule.mabschedule.dto.MedicalAppointmentDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ResponseDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDoctorDto;
 import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDto;
@@ -25,7 +26,7 @@ public class AppointmentApi {
         this.appointmentBl = appointmentBl;
     }
 
-    @PostMapping("/{doctorId}/{periodId}/{medicalAppointmentId}")
+    @PostMapping("/doctor/{doctorId}/period/{periodId}/medical-appointment/{medicalAppointmentId}")
     public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postAppointmentForDoctor(
             @PathVariable Long doctorId,
             @PathVariable Long periodId,
@@ -40,6 +41,23 @@ public class AppointmentApi {
         ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
         System.out.println("response: " + response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/patient/{pacientId}/hospital-doctor/{hospitalDoctorId}")
+    public ResponseDto<MedicalAppointmentDto> postMedicalAppointment(
+            @PathVariable Long pacientId,
+            @PathVariable Long hospitalDoctorId,
+            @RequestBody MedicalAppointmentDto medicalAppointmentDto
+    ){
+        logger.info("postMedicalAppointment");
+        MedicalAppointmentDto medicalAppointment = appointmentBl.postMedicalAppointment(pacientId, hospitalDoctorId, medicalAppointmentDto);
+        logger.info("medicalAppointment: " + medicalAppointment);
+        int code = 200;
+        String message = "OK";
+        Boolean success = true;
+        ResponseDto<MedicalAppointmentDto> response = new ResponseDto<>(success, message, code, medicalAppointment);
+        System.out.println("response: " + response);
+        return response;
     }
 
 }

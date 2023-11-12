@@ -30,9 +30,9 @@ public class GlobalSecurityConfiguration {
             authorizeHttpRequests
                     .requestMatchers("/api/v1/appointment/**").hasRole("doctor")
                     .requestMatchers("/api/v1/period/periods").permitAll()
-                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/**").permitAll()
-                    .requestMatchers( HttpMethod.GET ,"api/v1/scheduleDoctor/doctor/**").permitAll()
-                    .requestMatchers( HttpMethod.POST ,"api/v1/scheduleDoctor/**").hasAnyRole("doctorJefe", "doctor")
+                    .requestMatchers( HttpMethod.GET ,"api/v1/schedule-doctor/**").permitAll()
+                    .requestMatchers( HttpMethod.GET ,"api/v1/schedule-doctor/doctor/**").permitAll()
+                    .requestMatchers( HttpMethod.POST ,"api/v1/schedule-doctor/unavailable-schedule/**").hasAnyRole("doctorJefe", "doctor")
                     .anyRequest()
                     .denyAll();
         });

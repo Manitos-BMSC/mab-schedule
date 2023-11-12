@@ -1,10 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.api;
 
 import bo.edu.ucb.mabschedule.mabschedule.bl.ScheduleDoctorBl;
-import bo.edu.ucb.mabschedule.mabschedule.dto.PeriodDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ResponseDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDoctorDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.UnavailableScheduleDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/scheduleDoctor")
+@RequestMapping("/api/v1/schedule-doctor")
 public class ScheduleDoctorApi {
 
     private final Logger logger = LoggerFactory.getLogger(ScheduleDoctorApi.class);
@@ -61,14 +58,13 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("unavailable-schedule/{doctorId}/{periodId}")
+    @PostMapping("/unavailable-schedule/{doctorId}")
     public ResponseEntity<ResponseDto<ScheduleDoctorDto>> postUnavailableSchedule(
             @PathVariable Long doctorId,
-            @PathVariable Long periodId,
-            @RequestBody UnavailableScheduleDto unavailableScheduleDto
-    ){
+            @RequestBody UnavailableSchedulePeriodsDto unavailableSchedulePeriodsDto
+            ){
         logger.info("post unavailable schedule for doctor with id: " + doctorId);
-        scheduleDoctorBl.postUnavailableSchedule(doctorId, periodId, unavailableScheduleDto);
+        scheduleDoctorBl.postUnavailableSchedule(doctorId, unavailableSchedulePeriodsDto);
         logger.info("doctor schedule updated");
         int code = 200;
         String message = "OK";
@@ -78,5 +74,21 @@ public class ScheduleDoctorApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PostMapping("/appointment/{doctorId}/medical-appointment/{medicalAppointmentId}")
+    public ResponseDto<ScheduleDoctorDto> postAppointment(
+            @PathVariable Long doctorId,
+            @PathVariable Long medicalAppointmentId,
+            @RequestBody SchedulePeriodsDto schedulePeriodsDto
+    ){
+        logger.info("postAppointment");
+        scheduleDoctorBl.postAppointment(doctorId, medicalAppointmentId, schedulePeriodsDto);
+        logger.info("appointment created");
+        int code = 200;
+        String message = "OK";
+        Boolean success = true;
+        ResponseDto<ScheduleDoctorDto> response = new ResponseDto<>(success, message, code, null);
+        System.out.println("response: " + response);
+        return response;
+    }
 
 }
