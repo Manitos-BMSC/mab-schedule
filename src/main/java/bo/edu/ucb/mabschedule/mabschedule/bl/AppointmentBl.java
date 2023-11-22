@@ -2,10 +2,7 @@ package bo.edu.ucb.mabschedule.mabschedule.bl;
 
 import bo.edu.ucb.mabschedule.mabschedule.dao.*;
 import bo.edu.ucb.mabschedule.mabschedule.dao.repository.*;
-import bo.edu.ucb.mabschedule.mabschedule.dto.MedicalAppointmentDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.PeriodDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.ScheduleDto;
-import bo.edu.ucb.mabschedule.mabschedule.dto.SchedulePeriodsDto;
+import bo.edu.ucb.mabschedule.mabschedule.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +49,9 @@ public class AppointmentBl {
         scheduleRepository.save(schedule);
     }
 
-    public MedicalAppointmentDto postMedicalAppointment(Long pacientId, Long hospitalDoctorId, MedicalAppointmentDto medicalAppointmentDto){
+    public MedicalAppointmentDto postMedicalAppointment(Long pacientId, Long hospitalDoctorId, AppointmentScheduleDto appointmentScheduleDto){
         logger.info("Initializing postMedicalAppointment");
+        MedicalAppointmentDto medicalAppointmentDto = appointmentScheduleDto.getMedicalAppointment();
         MedicalAppointment medicalAppointment = new MedicalAppointment();
         Pacient pacient = pacientRepository.findById(pacientId).orElseThrow();
         HospitalDoctor hospitalDoctor = hospitalDoctorRepository.findById(hospitalDoctorId).orElseThrow();
@@ -66,6 +64,19 @@ public class AppointmentBl {
         medicalAppointment.setMedicalAppointmentState(medicalAppointmentDto.getMedicalAppointmentState());
         medicalAppointment.setStatus(true);
         MedicalAppointment savedMedicalAppointment = medicalAppointmentRepository.save(medicalAppointment);
+
+        for(PeriodDto period : appointmentScheduleDto.getPeriods()){
+            Schedule schedule = new Schedule();
+            schedule.setDoctorId(hospitalDoctor.getDoctorId());
+            schedule.setPeriodId(periodRepository.findById((long)period.getId()).orElseThrow());
+            schedule.setMedicalAppointmentId(savedMedicalAppointment);
+            schedule.setScheduleDate(savedMedicalAppointment.getMedicalAppointmentDate());
+            schedule.setState("Pendiente");
+            schedule.setStatus(true);
+            scheduleRepository.save(schedule);
+        }
+
+
         return new MedicalAppointmentDto(savedMedicalAppointment);
     }
 

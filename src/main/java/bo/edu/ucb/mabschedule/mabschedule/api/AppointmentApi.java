@@ -44,10 +44,10 @@ public class AppointmentApi {
     public ResponseDto<MedicalAppointmentDto> postMedicalAppointment(
             @PathVariable Long pacientId,
             @PathVariable Long hospitalDoctorId,
-            @RequestBody MedicalAppointmentDto medicalAppointmentDto
+            @RequestBody AppointmentScheduleDto appointmentScheduleDto
     ){
         logger.info("postMedicalAppointment");
-        MedicalAppointmentDto medicalAppointment = appointmentBl.postMedicalAppointment(pacientId, hospitalDoctorId, medicalAppointmentDto);
+        MedicalAppointmentDto medicalAppointment = appointmentBl.postMedicalAppointment(pacientId, hospitalDoctorId, appointmentScheduleDto);
         logger.info("medicalAppointment: " + medicalAppointment);
         int code = 200;
         String message = "OK";
