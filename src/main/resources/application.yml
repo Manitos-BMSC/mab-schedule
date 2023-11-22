@@ -31,3 +31,6 @@ management:
   zipkin:
     tracing:
       endpoint: http://192.241.149.226:9411/api/v2/spans
+minio:
+  bucket:
+    appointment: ${MINIO_BUCKET_APPOINTMENT:appointment-docs}

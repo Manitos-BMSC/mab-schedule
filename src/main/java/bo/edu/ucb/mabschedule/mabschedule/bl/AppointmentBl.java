@@ -3,10 +3,18 @@ package bo.edu.ucb.mabschedule.mabschedule.bl;
 import bo.edu.ucb.mabschedule.mabschedule.dao.*;
 import bo.edu.ucb.mabschedule.mabschedule.dao.repository.*;
 import bo.edu.ucb.mabschedule.mabschedule.dto.*;
+import bo.edu.ucb.mabschedule.mabschedule.service.FileUploaderService;
+import bo.edu.ucb.mabschedule.mabschedule.service.KeycloakTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AppointmentBl {
@@ -24,14 +32,27 @@ public class AppointmentBl {
     private final PacientRepository pacientRepository;
     @Autowired
     private final HospitalDoctorRepository hospitalDoctorRepository;
+    @Autowired
+    private final S3ObjectRepository s3ObjectRepository;
+    @Autowired
+    private final FilesMedialAppointmentRepository filesMedialAppointmentRepository;
 
-    public AppointmentBl(ScheduleRepository scheduleRepository, DoctorRepository doctorRepository, PeriodRepository periodRepository, MedicalAppointmentRepository medicalAppointmentRepository, PacientRepository pacientRepository, HospitalDoctorRepository hospitalDoctorRepository){
+    @Autowired
+    FileUploaderService fileUploaderService;
+    @Autowired
+    KeycloakTokenService keycloakTokenService;
+
+    private String bucket = "appointment-docs";
+
+    public AppointmentBl(ScheduleRepository scheduleRepository, DoctorRepository doctorRepository, PeriodRepository periodRepository, MedicalAppointmentRepository medicalAppointmentRepository, PacientRepository pacientRepository, HospitalDoctorRepository hospitalDoctorRepository, S3ObjectRepository s3ObjectRepository, FilesMedialAppointmentRepository filesMedialAppointmentRepository){
         this.scheduleRepository = scheduleRepository;
         this.doctorRepository = doctorRepository;
         this.periodRepository = periodRepository;
         this.medicalAppointmentRepository = medicalAppointmentRepository;
         this.pacientRepository = pacientRepository;
         this.hospitalDoctorRepository = hospitalDoctorRepository;
+        this.s3ObjectRepository = s3ObjectRepository;
+        this.filesMedialAppointmentRepository = filesMedialAppointmentRepository;
     }
 
     public void postAppointmentForDoctor(Long doctorId, Long periodId, Long medicalAppointmentId, ScheduleDto scheduleDto){
@@ -96,6 +117,37 @@ public class AppointmentBl {
             scheduleRepository.save(schedule);
         }
         logger.info("appointment saved");
+    }
+
+    public List<MedicalAppointmentDto> getAppointmentForDoctor(Long doctorId){
+        logger.info("Initializing postAppointmentForDoctor");
+        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByDoctorId(doctorId);
+
+        return MedicalAppointmentDto.fromList(medicalAppointments);
+    }
+
+    public void postFileForMedicalAppointment(Long medicalAppointmentId, MultipartFile file){
+        logger.info("Initializing postFileForMedicalAppointment");
+        logger.info("Getting token");
+        Map<String, ?> response = keycloakTokenService.getToken(
+                "client_credentials",
+                "mab_backend",
+                "mzhqeGKq8LiwBb9tQ6q1z4HONF6to3tr"
+        );
+
+        String token = "Bearer " + response.get("access_token");
+        logger.info("Uploading file to bucket: " + bucket);
+        FileDto fileDto = fileUploaderService.uploadFile(file, bucket, false, token);
+        logger.info("Saving file on database");
+
+        S3Object fileS3 = s3ObjectRepository.findById(fileDto.getS3ObjectId()).get() ;
+        FilesMedialAppointment filesMedialAppointment = new FilesMedialAppointment();
+        MedicalAppointment medicalAppointment = medicalAppointmentRepository.findById(medicalAppointmentId).get();
+        filesMedialAppointment.setMedicalAppointmentId(medicalAppointment);
+        filesMedialAppointment.setS3ObjectS3ObjectId(fileS3);
+        filesMedialAppointment.setFileDate(new Date());
+        filesMedialAppointment.setStatus(true);
+        filesMedialAppointmentRepository.save(filesMedialAppointment);
     }
 
 }

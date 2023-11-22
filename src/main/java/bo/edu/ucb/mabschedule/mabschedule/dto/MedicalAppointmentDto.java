@@ -1,8 +1,11 @@
 package bo.edu.ucb.mabschedule.mabschedule.dto;
 
 import bo.edu.ucb.mabschedule.mabschedule.dao.MedicalAppointment;
+import bo.edu.ucb.mabschedule.mabschedule.dao.repository.MedicalAppointmentRepository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MedicalAppointmentDto {
     private int idMedicalAppointment;
@@ -112,5 +115,9 @@ public MedicalAppointmentDto(int idMedicalAppointment, int patientId, int hospit
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public static List<MedicalAppointmentDto> fromList(List<MedicalAppointment> medicalAppointments){
+        return medicalAppointments.stream().map(MedicalAppointmentDto::new).collect(Collectors.toList());
     }
 }
