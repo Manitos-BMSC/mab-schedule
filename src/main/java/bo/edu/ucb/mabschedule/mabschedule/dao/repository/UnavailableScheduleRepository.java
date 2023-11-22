@@ -14,9 +14,9 @@ public interface UnavailableScheduleRepository extends JpaRepository<Unavailable
     @Query("SELECT us FROM UnavailableSchedule us " +
             "WHERE us.doctorId.id = :doctorId " +
             "AND us.status = true " +
-            "AND :searchDate >= us.dateFrom " +
-            "AND (:searchDate <= us.dateTo OR us.dateTo IS NULL)")
-    List<UnavailableSchedule> findAvailableSchedulesForDoctor(
+            "AND us.dateFrom <= :searchDate " +
+            "AND us.dateTo >= :searchDate")
+    List<UnavailableSchedule> findUnavailableSchedulesForDoctor(
             @Param("doctorId") Integer doctorId,
             @Param("searchDate") Date searchDate
     );

@@ -33,6 +33,7 @@ public class GlobalSecurityConfiguration {
                     .requestMatchers( HttpMethod.GET ,"api/v1/schedule-doctor/**").permitAll()
                     .requestMatchers( HttpMethod.GET ,"api/v1/schedule-doctor/doctor/**").permitAll()
                     .requestMatchers( HttpMethod.POST ,"api/v1/schedule-doctor/unavailable-schedule/**").hasAnyRole("doctorJefe", "doctor")
+                    .requestMatchers( HttpMethod.GET, "api/v1/schedule-doctor/unavailable-schedule/**").permitAll()
                     .anyRequest()
                     .denyAll();
         });
