@@ -34,3 +34,58 @@ management:
 minio:
   bucket:
     appointment: ${MINIO_BUCKET_APPOINTMENT:appointment-docs}
+
+security-constraints:
+  constraints:
+    - auth-roles:
+        - doctor
+      security-collections:
+        - name: appointment
+          patterns:
+            - /api/v1/appointment/**
+          methods:
+
+    - auth-roles:
+        - permitAll
+      security-collections:
+        - name: periods
+          patterns:
+            - /api/v1/period/periods
+          methods:
+
+    - auth-roles:
+        - permitAll
+      security-collections:
+        - name: schedule-doctor
+          patterns:
+            - /api/v1/schedule-doctor/**
+          methods:
+            - GET
+
+    - auth-roles:
+        - permitAll
+      security-collections:
+        - name: schedule-doctor-doctor
+          patterns:
+            - /api/v1/schedule-doctor/doctor/**
+          methods:
+            - GET
+
+    - auth-roles:
+        - doctorJefe
+        - doctor
+      security-collections:
+        - name: unavailable-schedule
+          patterns:
+            - /api/v1/schedule-doctor/unavailable-schedule/**
+          methods:
+            - POST
+
+    - auth-roles:
+        - permitAll
+      security-collections:
+        - name: unavailable-schedule
+          patterns:
+            - /api/v1/schedule-doctor/unavailable-schedule/**
+          methods:
+            - GET
