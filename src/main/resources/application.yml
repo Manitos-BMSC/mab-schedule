@@ -89,3 +89,13 @@ security-constraints:
             - /api/v1/schedule-doctor/unavailable-schedule/**
           methods:
             - GET
+
+    - auth-roles:
+        - doctorJefe
+        - doctor
+      security-collections:
+        - name: appointments-for-doctor
+          patterns:
+            - /api/v1/appointment/doctor/**
+          methods:
+            - GET
