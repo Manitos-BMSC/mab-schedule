@@ -80,10 +80,14 @@ public class AppointmentApi {
     @PostMapping("/medical-appointment/{medicalAppointmentId}/file")
     public ResponseDto<String> postFileForMedicalAppointment (
             @PathVariable Long medicalAppointmentId,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("files") List<MultipartFile> files
     ){
         logger.info("postFileForMedicalAppointment");
-        appointmentBl.postFileForMedicalAppointment(medicalAppointmentId, file);
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                appointmentBl.postFileForMedicalAppointment(medicalAppointmentId, file);
+            }
+        }
         logger.info("file created");
         int code = 200;
         String message = "OK";
