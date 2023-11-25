@@ -38,6 +38,15 @@ minio:
 security-constraints:
   constraints:
     - auth-roles:
+        - paciente
+      security-collections:
+        - name: appointments-for-patient
+          patterns:
+            - /api/v1/appointment/patient/**
+          methods:
+            - GET
+
+    - auth-roles:
         - doctor
       security-collections:
         - name: appointment
@@ -87,5 +96,15 @@ security-constraints:
         - name: unavailable-schedule
           patterns:
             - /api/v1/schedule-doctor/unavailable-schedule/**
+          methods:
+            - GET
+
+    - auth-roles:
+        - doctorJefe
+        - doctor
+      security-collections:
+        - name: appointments-for-doctor
+          patterns:
+            - /api/v1/appointment/doctor/**
           methods:
             - GET

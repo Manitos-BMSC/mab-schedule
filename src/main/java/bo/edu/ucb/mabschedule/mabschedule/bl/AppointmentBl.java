@@ -150,4 +150,12 @@ public class AppointmentBl {
         filesMedialAppointmentRepository.save(filesMedialAppointment);
     }
 
+    public List<MedicalAppointmentDto> getAppointmentForPatient(Long pacientId){
+        logger.info("Initializing getAppointmentForPacient");
+        Pacient pacient = pacientRepository.findById(pacientId).orElseThrow();
+        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByPatientId(pacient);
+
+        return MedicalAppointmentDto.fromList(medicalAppointments);
+    }
+
 }

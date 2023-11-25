@@ -1,6 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.dao.repository;
 
 import bo.edu.ucb.mabschedule.mabschedule.dao.MedicalAppointment;
+import bo.edu.ucb.mabschedule.mabschedule.dao.Pacient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,5 +15,7 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
     @Query("SELECT m FROM MedicalAppointment m WHERE m.hospitalDoctorId.doctorId.id = :doctorId")
     List<MedicalAppointment> findByDoctorId(@Param("doctorId") Long doctorId);
 
+    @Query("SELECT m FROM MedicalAppointment m WHERE m.pacientId = :patient")
+    List<MedicalAppointment> findByPatientId(@Param("patient") Pacient patient);
 
 }
