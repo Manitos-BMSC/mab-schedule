@@ -111,5 +111,20 @@ public class AppointmentApi {
         System.out.println("response: " + response);
         return response;
     }
+
+    @GetMapping("/patient/{patientId}")
+    public ResponseDto<List<MedicalAppointmentDto>> getAppointmentForPatient(
+            @PathVariable Long patientId
+    ){
+        logger.info("getAppointmentForPatient");
+        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForPatient(patientId);
+        logger.info("medicalAppointmentDto: " + medicalAppointmentsDto);
+        int code = 200;
+        String message = "OK";
+        Boolean success = true;
+        ResponseDto<List<MedicalAppointmentDto>> response = new ResponseDto<>(success, message, code, medicalAppointmentsDto);
+        System.out.println("response: " + response);
+        return response;
+    }
 }
 

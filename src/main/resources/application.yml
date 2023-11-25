@@ -38,6 +38,15 @@ minio:
 security-constraints:
   constraints:
     - auth-roles:
+        - paciente
+      security-collections:
+        - name: appointments-for-patient
+          patterns:
+            - /api/v1/appointment/patient/**
+          methods:
+            - GET
+
+    - auth-roles:
         - doctor
       security-collections:
         - name: appointment
