@@ -6,6 +6,7 @@ import bo.edu.ucb.mabschedule.mabschedule.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -99,10 +100,11 @@ public class AppointmentApi {
 
     @GetMapping("/doctor/{doctorId}")
     public ResponseDto<List<MedicalAppointmentDto>> getAppointmentForDoctor(
-            @PathVariable Long doctorId
+            @PathVariable Long doctorId,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date date
     ){
         logger.info("getAppointmentForDoctor");
-        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForDoctor(doctorId);
+        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForDoctor(doctorId, date);
         logger.info("medicalAppointmentDto: " + medicalAppointmentsDto);
         int code = 200;
         String message = "OK";
@@ -114,10 +116,11 @@ public class AppointmentApi {
 
     @GetMapping("/patient/{patientId}")
     public ResponseDto<List<MedicalAppointmentDto>> getAppointmentForPatient(
-            @PathVariable Long patientId
+            @PathVariable Long patientId,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date date
     ){
         logger.info("getAppointmentForPatient");
-        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForPatient(patientId);
+        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForPatient(patientId, date);
         logger.info("medicalAppointmentDto: " + medicalAppointmentsDto);
         int code = 200;
         String message = "OK";

@@ -119,9 +119,9 @@ public class AppointmentBl {
         logger.info("appointment saved");
     }
 
-    public List<MedicalAppointmentDto> getAppointmentForDoctor(Long doctorId){
+    public List<MedicalAppointmentDto> getAppointmentForDoctor(Long doctorId, Date date){
         logger.info("Initializing postAppointmentForDoctor");
-        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByDoctorId(doctorId);
+        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByDoctorIdAndDate(doctorId, date);
 
         return MedicalAppointmentDto.fromList(medicalAppointments);
     }
@@ -150,10 +150,10 @@ public class AppointmentBl {
         filesMedialAppointmentRepository.save(filesMedialAppointment);
     }
 
-    public List<MedicalAppointmentDto> getAppointmentForPatient(Long pacientId){
+    public List<MedicalAppointmentDto> getAppointmentForPatient(Long pacientId, Date date){
         logger.info("Initializing getAppointmentForPacient");
         Pacient pacient = pacientRepository.findById(pacientId).orElseThrow();
-        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByPatientId(pacient);
+        List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByPatientIdAndDate(pacient, date);
 
         return MedicalAppointmentDto.fromList(medicalAppointments);
     }

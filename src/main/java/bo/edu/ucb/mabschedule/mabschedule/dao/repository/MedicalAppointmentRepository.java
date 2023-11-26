@@ -7,15 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppointment, Long> {
 
-    @Query("SELECT m FROM MedicalAppointment m WHERE m.hospitalDoctorId.doctorId.id = :doctorId")
-    List<MedicalAppointment> findByDoctorId(@Param("doctorId") Long doctorId);
+    @Query("SELECT m FROM MedicalAppointment m WHERE m.hospitalDoctorId.doctorId.id = :doctorId and m.medicalAppointmentDate = :date")
+    List<MedicalAppointment> findByDoctorIdAndDate(@Param("doctorId") Long doctorId, @Param("date") Date date);
 
-    @Query("SELECT m FROM MedicalAppointment m WHERE m.pacientId = :patient")
-    List<MedicalAppointment> findByPatientId(@Param("patient") Pacient patient);
+    @Query("SELECT m FROM MedicalAppointment m WHERE m.pacientId = :patient and m.medicalAppointmentDate = :date")
+    List<MedicalAppointment> findByPatientIdAndDate(@Param("patient") Pacient patient, @Param("date") Date date);
 
 }
