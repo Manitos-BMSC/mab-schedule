@@ -51,8 +51,9 @@ security-constraints:
       security-collections:
         - name: appointment
           patterns:
-            - /api/v1/appointment/**
+            - /api/v1/appointment/patient/**
           methods:
+            - POST
 
     - auth-roles:
         - permitAll
