@@ -1,5 +1,7 @@
 package bo.edu.ucb.mabschedule.mabschedule.dto;
 
+import bo.edu.ucb.mabschedule.mabschedule.dao.Person;
+
 public class PersonDto {
 
     private String name;
@@ -28,6 +30,20 @@ public class PersonDto {
         this.cityId = cityId;
         this.isPassport = isPassport;
         this.documentNumber = documentNumber;
+    }
+
+    public PersonDto(Person person){
+        this.name = person.getName();
+        this.lastName = person.getLastname();
+        this.email = person.getUserMail();
+        this.phone = person.getPhoneNumber();
+        this.birthDate = person.getBirthDate().toString();
+        this.isMale = person.getGender();
+        this.address = person.getAddress();
+        this.cityId = person.getCityId().getId();
+        this.isPassport = person.getDocumentType();
+        this.documentNumber = person.getDocumentNumber();
+
     }
 
     public String getName() {

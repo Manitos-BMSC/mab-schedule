@@ -99,17 +99,17 @@ public class AppointmentApi {
     }
 
     @GetMapping("/doctor/{doctorId}")
-    public ResponseDto<List<MedicalAppointmentDto>> getAppointmentForDoctor(
+    public ResponseDto<List<MedicalAppointmentPatientDto>> getAppointmentForDoctor(
             @PathVariable Long doctorId,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") Date date
     ){
         logger.info("getAppointmentForDoctor");
-        List<MedicalAppointmentDto> medicalAppointmentsDto = appointmentBl.getAppointmentForDoctor(doctorId, date);
+        List<MedicalAppointmentPatientDto> medicalAppointmentsDto = appointmentBl.getAppointmentForDoctor(doctorId, date);
         logger.info("medicalAppointmentDto: " + medicalAppointmentsDto);
         int code = 200;
         String message = "OK";
         Boolean success = true;
-        ResponseDto<List<MedicalAppointmentDto>> response = new ResponseDto<>(success, message, code, medicalAppointmentsDto);
+        ResponseDto<List<MedicalAppointmentPatientDto>> response = new ResponseDto<>(success, message, code, medicalAppointmentsDto);
         System.out.println("response: " + response);
         return response;
     }

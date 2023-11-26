@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -119,11 +120,21 @@ public class AppointmentBl {
         logger.info("appointment saved");
     }
 
-    public List<MedicalAppointmentDto> getAppointmentForDoctor(Long doctorId, Date date){
+    public List<MedicalAppointmentPatientDto> getAppointmentForDoctor(Long doctorId, Date date){
         logger.info("Initializing postAppointmentForDoctor");
         List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByDoctorIdAndDate(doctorId, date);
 
-        return MedicalAppointmentDto.fromList(medicalAppointments);
+        List<MedicalAppointmentPatientDto> medicalAppointmentPatientDtos = new ArrayList<>();
+
+        for(MedicalAppointment medicalAppointment : medicalAppointments){
+            MedicalAppointmentDto medicalAppointmentDto = new MedicalAppointmentDto(medicalAppointment);
+            Person patient = medicalAppointment.getPacientId().getMabPersonIdKeycloack();
+            PersonDto patientDto = new PersonDto(patient);
+            MedicalAppointmentPatientDto medicalAppointmentPatientDto = new MedicalAppointmentPatientDto(medicalAppointmentDto, patientDto);
+            medicalAppointmentPatientDtos.add(medicalAppointmentPatientDto);
+        }
+
+        return medicalAppointmentPatientDtos;
     }
 
     public void postFileForMedicalAppointment(Long medicalAppointmentId, MultipartFile file){
