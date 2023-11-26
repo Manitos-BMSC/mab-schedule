@@ -109,3 +109,12 @@ security-constraints:
             - /api/v1/appointment/doctor/**
           methods:
             - GET
+    - auth-roles:
+        - doctorJefe
+        - doctor
+      security-collections:
+        - name: appointments-file
+          patterns:
+            - /api/v1/appointment/medical-appointment/**
+          methods:
+            - POST

@@ -1,4 +1,4 @@
-FROM openjdk:17 AS build
+FROM arm64v8/eclipse-temurin:17-jdk AS build
 
 EXPOSE 8013
 
