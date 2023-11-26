@@ -161,12 +161,23 @@ public class AppointmentBl {
         filesMedialAppointmentRepository.save(filesMedialAppointment);
     }
 
-    public List<MedicalAppointmentDto> getAppointmentForPatient(Long pacientId, Date date){
+    public List<MedicalAppointmentPlaceTimeDto> getAppointmentForPatient(Long pacientId, Date date){
         logger.info("Initializing getAppointmentForPacient");
         Pacient pacient = pacientRepository.findById(pacientId).orElseThrow();
         List<MedicalAppointment> medicalAppointments = medicalAppointmentRepository.findByPatientIdAndDate(pacient, date);
+        List<MedicalAppointmentPlaceTimeDto> medicalAppointmentPlaceTimeDtos = new ArrayList<>();
+        for(MedicalAppointment medicalAppointment : medicalAppointments){
+           Hospital hospital = medicalAppointment.getHospitalDoctorId().getHospitalId();
+           List<Period> periods = medicalAppointment.getScheduleCollection().stream().map(Schedule::getPeriodId).toList();
+           List<PeriodDto> periodsDto = PeriodDto.fromEntityList(periods);
+           HospitalDto hospitalDto = new HospitalDto(hospital);
+           MedicalAppointmentDto medicalAppointmentDto = new MedicalAppointmentDto(medicalAppointment);
+           MedicalAppointmentPlaceTimeDto medicalAppointmentPlaceTimeDto = new MedicalAppointmentPlaceTimeDto(medicalAppointmentDto, hospitalDto, periodsDto);
+           medicalAppointmentPlaceTimeDtos.add(medicalAppointmentPlaceTimeDto);
+        }
 
-        return MedicalAppointmentDto.fromList(medicalAppointments);
+
+        return medicalAppointmentPlaceTimeDtos;
     }
 
 }
